@@ -1,0 +1,8 @@
+name = "otafuku"
+compatibility_date = "2026-09-15"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "xiongqi-hub"
+database_id = "41e400b0-e91e-440e-a192-0165e5079a95"
