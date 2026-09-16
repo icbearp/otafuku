@@ -4,3 +4,8 @@ dist
 .wrangler-build
 .dev.vars
 *.local
+.wrangler-worker-build
+ChromeStandaloneSetup64.exe
+GoogleChromeStandaloneEnterprise64.msi
+chrome-install.log
+debug.log

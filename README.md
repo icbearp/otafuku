@@ -25,23 +25,27 @@ npm run preview
 
 子站上线时，只需把对应板块的 `destination` 从 `null` 改成完整的 HTTPS 地址。按钮会自动从“独立网站筹备中”变成“进入独立网站”。
 
-## Cloudflare Pages
+## Cloudflare 部署
 
-推荐使用 GitHub 自动部署：
+当前生产环境是 Cloudflare Workers Static Assets，地址为
+`https://xiongqi-hub.otafuku2599.workers.dev`。Pages 新建项目在当前账户返回
+`Subdomain is blocked`，所以保留 Pages 配置作为后续可选方案，不影响当前网站上线。
 
-1. 把 `website/` 作为仓库根目录，或在 Cloudflare 的 Root directory 中填写 `website`。
-2. Build command 填写 `npm run build`。
-3. Build output directory 填写 `dist`。
-4. Node.js 版本使用 22 或更高版本。
+```bash
+npm ci
+npm run deploy
+```
 
-### 开启询盘接口
+`wrangler.worker.toml` 定义静态资源、`worker/index.ts` 定义入口和安全响应头，
+`functions/api/inquiry.ts` 同时供 Workers 和未来 Pages 使用。Cloudflare D1 数据库
+`xiongqi-hub` 已创建，绑定变量为 `DB`，表结构位于 `database/schema.sql`。
 
-1. 在 Cloudflare 创建 D1 数据库 `xiongqi-hub`。
-2. 执行 `database/schema.sql`。
-3. 在 Pages 项目 Settings > Bindings 中添加 D1 binding，变量名必须为 `DB`。
-4. 重新部署。
+首次连接 GitHub 自动构建时，在 Cloudflare 控制台进入 Worker `xiongqi-hub` 的
+Settings > Builds，连接 `icbearp/otafuku`，生产分支使用 `main`，
+构建命令为 `npm run build`，部署命令为 `npx wrangler deploy --config wrangler.worker.toml`。
+连接前先确认 GitHub App 的仓库访问范围仅包括本仓库。不要提交 API Token 或 `.dev.vars`。
 
-本地 Wrangler 开发可复制 `wrangler.example.toml` 为 `wrangler.toml`，填入真实数据库 ID。不要提交密钥或本地 `.dev.vars`。
+若日后 Pages 账户限制解除，也可改用 `wrangler.toml` 和 `npm run deploy:pages`。
 
 ## 上线前必须替换
 
