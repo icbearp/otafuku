@@ -2,6 +2,7 @@ import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { InquiryForm } from "./components/InquiryForm";
 import { PortalSection } from "./components/PortalSection";
+import { ExperienceShowcase } from "./components/ExperienceShowcase";
 import { BrandMark } from "./components/BrandMark";
 import { company } from "./data/company";
 import { portals } from "./data/portals";
@@ -23,6 +24,8 @@ export default function App() {
             {portals.map((portal, index) => <PortalSection key={portal.id} portal={portal} index={index} />)}
           </div>
         </section>
+
+        <ExperienceShowcase />
 
         <section className="company-section" id="company">
           <div className="company-statement">

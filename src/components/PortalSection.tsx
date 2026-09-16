@@ -60,6 +60,9 @@ export function PortalSection({ portal, index }: PortalSectionProps) {
             独立网站筹备中
           </span>
         )}
+        <a className="portal-preview-link" href={`#${portal.id === "ceramics" ? "ceramic" : portal.id === "ai" ? "ai" : "apparel"}-story`}>
+          查看互动展示 <span aria-hidden="true">↗</span>
+        </a>
       </div>
       <figure className="portal-media">
         {portal.image ? <img src={portal.image} alt={portal.imageAlt} loading="lazy" /> : <AiMaterial />}
