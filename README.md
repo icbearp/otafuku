@@ -36,16 +36,16 @@ npm ci
 npm run deploy
 ```
 
-`wrangler.worker.toml` 定义静态资源、`worker/index.ts` 定义入口和安全响应头，
+`wrangler.toml` 是 Cloudflare 自动构建和本地部署共同使用的生产配置；
+`worker/index.ts` 定义入口和安全响应头，
 `functions/api/inquiry.ts` 同时供 Workers 和未来 Pages 使用。Cloudflare D1 数据库
 `xiongqi-hub` 已创建，绑定变量为 `DB`，表结构位于 `database/schema.sql`。
 
-首次连接 GitHub 自动构建时，在 Cloudflare 控制台进入 Worker `xiongqi-hub` 的
-Settings > Builds，连接 `icbearp/otafuku`，生产分支使用 `main`，
-构建命令为 `npm run build`，部署命令为 `npx wrangler deploy --config wrangler.worker.toml`。
-连接前先确认 GitHub App 的仓库访问范围仅包括本仓库。不要提交 API Token 或 `.dev.vars`。
+GitHub 自动构建已连接 `icbearp/otafuku`。生产分支为 `main`，
+构建命令为 `npm run build`，部署命令为 `npx wrangler deploy`，
+与仓库根目录的 `wrangler.toml` 保持一致。不要提交 API Token 或 `.dev.vars`。
 
-若日后 Pages 账户限制解除，也可改用 `wrangler.toml` 和 `npm run deploy:pages`。
+若日后 Pages 账户限制解除，也可改用 `wrangler.pages.toml` 和 `npm run deploy:pages`。
 
 ## 上线前必须替换
 

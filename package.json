@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "check": "tsc -b",
-    "pages:dev": "wrangler pages dev dist",
-    "deploy": "npm run build && wrangler deploy --config wrangler.worker.toml",
-    "deploy:pages": "wrangler pages deploy dist"
+    "pages:dev": "wrangler pages dev dist --config wrangler.pages.toml",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:pages": "wrangler pages deploy dist --config wrangler.pages.toml"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans-sc": "^5.3.0",
