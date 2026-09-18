@@ -29,6 +29,12 @@ const ceramicChapters = [
   { title: "让成品回到生活里。", text: "镜头绕行一周，观察杯、碗与花器的整体关系。具体材质与安全标准待实物核验。" },
 ] as const;
 
+const ceramicDimensions = [
+  { name: "杯", primary: "约 500 mL", secondary: "口径 10.1 × 高 10.5 cm" },
+  { name: "浅盘", primary: "8 英寸", secondary: "直径 20.3 × 高 3.1 cm" },
+  { name: "花器", primary: "桌面款", secondary: "最大径 10.4 × 高 18 cm" },
+] as const;
+
 function smooth(value: number) {
   const t = Math.max(0, Math.min(1, value));
   return t * t * (3 - 2 * t);
@@ -53,9 +59,11 @@ function CameraRig({ kind, progress }: { kind: StoryKind; progress: ProgressRef 
       target.set(0, interpolate([0, .77, -.72, 0], p), 0);
     } else {
       const orbit = smooth((p - .75) / .25) * Math.PI * 2;
-      const radius = size.width < 600 ? 8.2 : 4.7;
-      camera.position.set(Math.sin(orbit) * radius, size.width < 600 ? 2.2 : 1.55, Math.cos(orbit) * radius);
-      target.set(0, -.05, 0);
+      const narrow = size.width < 600;
+      const focusX = narrow ? p < .66 ? interpolate([-1.48, 0, 1.45], p / .66) : 1.45 * (1 - smooth((p - .66) / .18)) : 0;
+      const radius = narrow ? p < .66 ? interpolate([5.4, 6.2, 5.7], p / .66) : 5.7 + (14.5 - 5.7) * smooth((p - .66) / .2) : 4.7;
+      camera.position.set(focusX + Math.sin(orbit) * radius, narrow ? 2.2 : 1.55, Math.cos(orbit) * radius);
+      target.set(focusX, narrow ? -.65 : -.05, 0);
     }
     camera.lookAt(target);
     camera.updateProjectionMatrix();
@@ -223,7 +231,7 @@ function ImmersiveStory({ kind }: { kind: StoryKind }) {
   useScrollStory(sectionRef, progress, invalidate);
   const chapters = kind === "apparel" ? apparelChapters : ceramicChapters;
   return <section ref={sectionRef} className={`immersive-story immersive-story--${kind}`} aria-label={kind === "apparel" ? "服装 3D 滚动展示" : "陶瓷 3D 工艺展示"}>
-    <div className="immersive-stage" aria-hidden="true">
+    <div className="immersive-stage">
       {webgl ? <Canvas frameloop="demand" dpr={[1, 1.6]} camera={{ position: [0, 0, 4.5], fov: kind === "apparel" ? 38 : 43 }} onCreated={({ invalidate: requestFrame }) => { invalidate.current = requestFrame; requestFrame(); }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}><Scene kind={kind} progress={progress} color={color} /></Canvas> : <img src={kind === "apparel" ? "/assets/apparel-polo.png" : "/assets/ceramics-studio-v1.png"} alt="" />}
       {kind === "apparel" && webgl && <img className="immersive-reference" src="/assets/apparel-polo.png" alt="" style={color === "navy" ? undefined : { opacity: 0 }} />}
       <div className="immersive-stage__label">{kind === "apparel" ? "POLO / 3D CONCEPT" : "CERAMICS / PROCESS CONCEPT"}</div>
@@ -231,7 +239,7 @@ function ImmersiveStory({ kind }: { kind: StoryKind }) {
     </div>
     <div className="immersive-track">
       {chapters.map((chapter, index) => <article key={chapter.title} className={`immersive-step immersive-step--${"align" in chapter ? chapter.align : index % 2 ? "right" : "left"}`}>
-        <div className="immersive-step__content"><span className="immersive-step__number">{String(index + 1).padStart(2, "0")} / 04</span><h2>{chapter.title}</h2><p>{chapter.text}</p>{kind === "apparel" && index === 0 && <div className="immersive-colors" role="group" aria-label="Polo 概念颜色">{(["navy", "black", "white"] as const).map((choice) => <button key={choice} className={`immersive-colors__${choice} ${color === choice ? "is-active" : ""}`} type="button" onClick={() => { setColor(choice); invalidate.current?.(); }} aria-pressed={color === choice} aria-label={`${choice === "navy" ? "深蓝" : choice === "black" ? "黑" : "白"}色概念`}/>)}</div>}</div>
+        <div className="immersive-step__content"><span className="immersive-step__number">{String(index + 1).padStart(2, "0")} / 04</span><h2>{chapter.title}</h2><p>{chapter.text}</p>{kind === "ceramic" && <div className="ceramic-measure" aria-label="陶瓷展示模型的设计尺寸"><span className="ceramic-measure__caption">设计尺寸 · 非实物测量</span>{(index === 3 ? ceramicDimensions : [ceramicDimensions[index]]).map((item) => <div className="ceramic-measure__row" key={item.name}><span>{item.name}</span><strong>{item.primary}</strong><small>{item.secondary}</small></div>)}</div>}{kind === "apparel" && index === 0 && <div className="immersive-colors" role="group" aria-label="Polo 概念颜色">{(["navy", "black", "white"] as const).map((choice) => <button key={choice} className={`immersive-colors__${choice} ${color === choice ? "is-active" : ""}`} type="button" onClick={() => { setColor(choice); invalidate.current?.(); }} aria-pressed={color === choice} aria-label={`${choice === "navy" ? "深蓝" : choice === "black" ? "黑" : "白"}色概念`}/>)}</div>}</div>
       </article>)}
     </div>
     <div className="immersive-note">3D 模型依据参考图片程序化制作，供设计演示；不是实物扫描或已核验商品。{kind === "ceramic" ? "成型、素烧、施釉和釉烧为常见流程，具体产品工艺待确认。" : "面料、背部结构与颜色以未来实物为准。"}</div>

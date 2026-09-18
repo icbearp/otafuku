@@ -1394,10 +1394,15 @@ textarea {
 .immersive-step h2 { max-width: 11ch; margin: 0; font-family: "Noto Sans SC Variable", "PingFang SC", sans-serif; font-size: clamp(43px, 4.6vw, 70px); line-height: 1.13; letter-spacing: -.035em; }
 .immersive-step p { max-width: 29ch; margin: 28px 0 0; color: #34454e; font-size: clamp(15px, 1.3vw, 18px); line-height: 1.8; }
 .immersive-story--ceramic .immersive-step p { color: #d4ded4; }
+.ceramic-measure { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(220, 233, 223, .32); }
+.ceramic-measure__caption { display: block; margin-bottom: 10px; color: #c4d9ca; font-size: 11px; font-weight: 650; letter-spacing: .08em; }
+.ceramic-measure__row { display: grid; grid-template-columns: 44px 86px 1fr; align-items: baseline; gap: 7px; padding: 6px 0; }
+.ceramic-measure__row span { color: #c4d9ca; font-size: 12px; }.ceramic-measure__row strong { font-size: 16px; font-weight: 730; }.ceramic-measure__row small { color: #e1e9df; font-size: 11px; line-height: 1.45; }
 .immersive-colors { display: flex; gap: 13px; margin-top: 34px; }.immersive-colors button { width: 36px; height: 36px; border: 3px solid #e8edf0; border-radius: 50%; box-shadow: 0 0 0 1px #6e8088; cursor: pointer; }.immersive-colors button.is-active { outline: 2px solid #172127; outline-offset: 3px; }.immersive-colors__navy { background: #202d4b; }.immersive-colors__black { background: #151918; }.immersive-colors__white { background: #dce0dc; }
 .immersive-note { position: relative; z-index: 2; padding: 20px max(24px, calc((100vw - 1400px) / 2)); background: #dce5e8; color: #35464e; font-size: 12px; line-height: 1.7; }
 .immersive-story--ceramic .immersive-note { color: #dce9df; background: #11271f; }
 @media (max-width: 960px) { .immersive-step__content { width: min(360px, 44vw); }.immersive-step h2 { font-size: clamp(38px, 5vw, 56px); } }
+@media (max-width: 767px) { .ceramic-measure { margin-top: 16px; padding-top: 12px; }.ceramic-measure__row { grid-template-columns: 36px 72px 1fr; gap: 5px; }.ceramic-measure__row span, .ceramic-measure__row small { font-size: 10px; }.ceramic-measure__row strong { font-size: 13px; } }
 @media (max-width: 767px) {
   .immersive-stage__label { top: 88px; }.immersive-stage__hint { bottom: 18px; }
   .immersive-step { align-items: flex-end; justify-content: flex-start; padding: 92px 16px 70px; }
