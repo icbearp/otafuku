@@ -23,9 +23,9 @@ npm run preview
 - 颜色、布局和响应式样式：`src/styles.css`
 - 品牌与产品图片：`public/assets/`
 - 3D 叙事组件：`src/components/ThreeStories.tsx`
-- 概念模型：`public/models/`，可运行 `npm run models:build` 重新生成
+- 展示模型：`public/models/`，尺寸和准确性说明见 `MODEL_SPECS.md`
 
-服装和陶瓷 3D 模型依据参考图片程序化制作，并非实物扫描。若之后获得实际商品的多角度照片、尺寸与材质资料，可在 Blender 中精修或直接替换同名 GLB；陶瓷模型要保留 `mesh_clay`、`mesh_painted`、`mesh_glazed` 三个阶段组名。Windows 上可用 Blender 后台模式执行 `scripts/validate-models.py` 检查模型结构。
+服装和陶瓷 3D 模型依据参考图片在 Blender 中程序化制作，并非实物扫描。若之后获得实际商品的多角度照片、尺寸与材质资料，可在 Blender 中精修或直接替换同名 GLB；陶瓷模型要保留 `mesh_clay`、`mesh_painted`、`mesh_glazed` 三个阶段组名。Blender 在 PATH 中时可运行 `npm run models:build`；本机也可使用 `E:\blender1\blender-4.0.1\blender.exe -b --python scripts/build_product_models.py`。Windows 上可用 Blender 后台模式执行 `scripts/validate-models.py` 检查模型结构。
 
 子站上线时，只需把对应板块的 `destination` 从 `null` 改成完整的 HTTPS 地址。按钮会自动从“独立网站筹备中”变成“进入独立网站”。
 

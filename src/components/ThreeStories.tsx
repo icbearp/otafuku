@@ -16,7 +16,7 @@ const shirtColors: Record<ApparelColor, string> = {
 };
 
 const apparelChapters = [
-  { title: "一件衣服，从完整轮廓开始。", text: "参考现有男士 POLO 样品，建立可旋转的概念模型。滚动继续，镜头会走向值得细看的地方。", align: "left" },
+  { title: "一件衣服，从完整轮廓开始。", text: "先看参考照片，再随滚动进入可旋转的 3D 展示模型。镜头继续走向领口与布面。", align: "left" },
   { title: "领口与门襟，决定第一眼。", text: "领口形态、纽扣位置与门襟比例影响穿着观感；最终结构仍以实物打样为准。", align: "left" },
   { title: "走近布面，理解日常穿着。", text: "从下摆到布面，关注贴身触感、透气与活动空间。当前 3D 材质仅模拟视觉，不代表已核验的面料成分。", align: "right" },
   { title: "转过身，看见完整设计。", text: "最后回到整体，并展示背面轮廓。概念模型并非产品扫描，实际背部工艺需多角度实拍核验。", align: "left" },
@@ -65,6 +65,7 @@ function CameraRig({ kind, progress }: { kind: StoryKind; progress: ProgressRef 
 
 function ShirtModel({ color }: { color: ApparelColor }) {
   const { scene } = useGLTF("/models/polo_shirt.glb");
+  const invalidate = useThree((state) => state.invalidate);
   const knit = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = canvas.height = 64;
@@ -95,15 +96,20 @@ function ShirtModel({ color }: { color: ApparelColor }) {
     model.traverse((node) => {
       if (!(node instanceof Mesh)) return;
       const mat = node.material as MeshStandardMaterial;
+      const isCollar = /^collar_-?\d/.test(node.name);
+      const isCuff = node.name.startsWith("cuff_");
+      const isFabric = node.name === "pique_body" || node.name.startsWith("sleeve_") || isCollar || isCuff || node.name === "placket" || node.name === "neck_stand";
+      if (!isFabric) return;
       const base = new Color(shirtColors[color]);
-      mat.color.copy(node.name.startsWith("collar") || node.name.startsWith("cuff") || node.name === "placket" ? base.multiplyScalar(.82) : base);
+      mat.color.copy(isCollar || isCuff || node.name === "placket" ? base.multiplyScalar(.82) : base);
       if (node.name === "pique_body" || node.name.startsWith("sleeve")) {
         mat.bumpMap = knit;
-        mat.bumpScale = .045;
+        mat.bumpScale = .012;
       }
       mat.needsUpdate = true;
     });
-  }, [model, color, knit]);
+    invalidate();
+  }, [model, color, knit, invalidate]);
   return <primitive object={model} />;
 }
 
@@ -134,8 +140,8 @@ function CeramicModel({ progress }: { progress: ProgressRef }) {
     model.traverse((node) => {
       if (!(node instanceof Mesh)) return;
       const mat = node.material as MeshStandardMaterial;
-      if (node.parent?.name === "mesh_clay") mat.opacity = 1;
-      if (node.parent?.name === "mesh_painted") mat.opacity = painted;
+      if (node.parent?.name === "mesh_clay") mat.opacity = 1 - painted;
+      if (node.parent?.name === "mesh_painted") mat.opacity = painted * (1 - glazed);
       if (node.parent?.name === "mesh_glazed") {
         mat.opacity = glazed;
         mat.roughness = .88 - .62 * smooth((p - .58) / .1);
@@ -185,6 +191,9 @@ function useScrollStory(sectionRef: React.RefObject<HTMLElement | null>, progres
           scrub: reduceMotion ? false : .35,
           onUpdate: (self) => {
             progress.current = self.progress;
+            if (element.classList.contains("immersive-story--apparel")) {
+              element.style.setProperty("--reference-opacity", String(1 - smooth((self.progress - .015) / .12)));
+            }
             invalidateRef.current?.();
           },
         },
@@ -216,6 +225,7 @@ function ImmersiveStory({ kind }: { kind: StoryKind }) {
   return <section ref={sectionRef} className={`immersive-story immersive-story--${kind}`} aria-label={kind === "apparel" ? "服装 3D 滚动展示" : "陶瓷 3D 工艺展示"}>
     <div className="immersive-stage" aria-hidden="true">
       {webgl ? <Canvas frameloop="demand" dpr={[1, 1.6]} camera={{ position: [0, 0, 4.5], fov: kind === "apparel" ? 38 : 43 }} onCreated={({ invalidate: requestFrame }) => { invalidate.current = requestFrame; requestFrame(); }} gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}><Scene kind={kind} progress={progress} color={color} /></Canvas> : <img src={kind === "apparel" ? "/assets/apparel-polo.png" : "/assets/ceramics-studio-v1.png"} alt="" />}
+      {kind === "apparel" && webgl && <img className="immersive-reference" src="/assets/apparel-polo.png" alt="" style={color === "navy" ? undefined : { opacity: 0 }} />}
       <div className="immersive-stage__label">{kind === "apparel" ? "POLO / 3D CONCEPT" : "CERAMICS / PROCESS CONCEPT"}</div>
       <div className="immersive-stage__hint">向下滚动，进入细节</div>
     </div>

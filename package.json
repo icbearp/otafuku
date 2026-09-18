@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "check": "tsc -b",
-    "models:build": "node scripts/generate-models.mjs",
+    "models:build": "blender --background --python scripts/build_product_models.py",
     "pages:dev": "wrangler pages dev dist --config wrangler.pages.toml",
     "deploy": "npm run build && wrangler deploy",
     "deploy:pages": "wrangler pages deploy dist --config wrangler.pages.toml"
