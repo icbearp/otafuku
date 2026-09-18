@@ -1367,3 +1367,41 @@ textarea {
 @media (max-width: 960px) { .experience-heading, .apparel-stage, .ceramic-stage, .ai-workspace { grid-template-columns: 1fr; }.experience-heading p { margin-top: 28px; }.apparel-visual, .ceramic-scene, .ceramic-scene img { min-height: 580px; }.ai-use-list { grid-template-columns: repeat(3, 1fr); border-right: 0; border-bottom: 1px solid #52655a; }.ai-use-list button { grid-template-columns: 1fr; gap: 8px; padding: 20px; }.ai-use-list button > span:last-child { display: none; } }
 @media (max-width: 767px) { .experience { padding: 88px 16px; }.experience-heading { margin-bottom: 38px; }.experience-heading h2 { font-size: clamp(38px, 11vw, 54px); }.experience-heading p { font-size: 15px; }.apparel-visual, .ceramic-scene, .ceramic-scene img { min-height: 420px; }.apparel-product { width: 84%; }.apparel-details, .ceramic-narrative { padding: 42px 26px; }.story-options { margin-top: 36px; }.process-steps { margin-top: 42px; }.process-steps strong { font-size: 14px; }.ai-use-list button { min-height: 76px; padding: 14px; }.ai-use-list button strong { font-size: 15px; }.ai-workflow-bar { padding: 18px; }.ai-workflow-content { padding: 44px 24px; }.workflow-prompt, .workflow-output { grid-template-columns: 1fr; gap: 8px; }.ai-workflow h3 { margin-bottom: 28px; } }
 @media (prefers-reduced-motion: reduce) { .apparel-product, .ceramic-scene img { transition: none; } }
+
+/* Full-viewport 3D narratives. The sticky stage is scoped to each story, unlike a
+   global fixed canvas that would keep rendering over the rest of the company site. */
+.immersive-story { position: relative; isolation: isolate; color: #172127; background: #e8edf0; }
+.story-loading { position: relative; min-height: 400dvh; color: #34454e; background: #e8edf0; font-size: 14px; }
+.story-loading--ceramic { color: #e5efe5; background: #19342b; }
+.story-loading img { position: sticky; top: 0; width: 100%; height: 100dvh; object-fit: contain; }
+.story-loading--ceramic img { object-fit: cover; opacity: .6; }
+.story-loading span { position: absolute; top: 44dvh; left: 50%; padding: 10px 16px; transform: translateX(-50%); background: var(--paper-raised); white-space: nowrap; }
+.story-loading--ceramic span { background: #19342b; }
+.immersive-story--ceramic { color: #f3f1e9; background: #19342b; }
+.immersive-stage { position: sticky; z-index: 0; top: 0; height: 100dvh; overflow: hidden; background: radial-gradient(circle at 50% 46%, #f6f9fa 0, #d5e0e5 68%, #bccbd1 100%); }
+.immersive-story--ceramic .immersive-stage { background: radial-gradient(circle at 50% 45%, #47604c 0, #274536 58%, #152d26 100%); }
+.immersive-stage canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.immersive-stage > img { width: 100%; height: 100%; object-fit: contain; }
+.immersive-stage__label, .immersive-stage__hint { position: absolute; z-index: 1; left: max(24px, calc((100vw - 1400px) / 2)); font-size: 11px; font-weight: 750; letter-spacing: .12em; pointer-events: none; }
+.immersive-stage__label { top: 112px; }.immersive-stage__hint { bottom: 34px; }
+.immersive-track { position: relative; z-index: 1; margin-top: -100dvh; pointer-events: none; }
+.immersive-step { display: flex; align-items: center; min-height: 100dvh; padding: 120px max(24px, calc((100vw - 1400px) / 2)) 100px; }
+.immersive-step--right { justify-content: flex-end; }
+.immersive-step__content { width: min(420px, 32vw); padding: 26px 30px; background: rgba(239, 246, 248, .89); backdrop-filter: blur(14px); pointer-events: auto; }
+.immersive-story--ceramic .immersive-step__content { background: rgba(19, 44, 33, .84); }
+.immersive-step__number { display: block; margin-bottom: 22px; font-size: 12px; font-weight: 750; letter-spacing: .12em; }
+.immersive-step h2 { max-width: 11ch; margin: 0; font-family: "Noto Sans SC Variable", "PingFang SC", sans-serif; font-size: clamp(43px, 4.6vw, 70px); line-height: 1.13; letter-spacing: -.035em; }
+.immersive-step p { max-width: 29ch; margin: 28px 0 0; color: #34454e; font-size: clamp(15px, 1.3vw, 18px); line-height: 1.8; }
+.immersive-story--ceramic .immersive-step p { color: #d4ded4; }
+.immersive-colors { display: flex; gap: 13px; margin-top: 34px; }.immersive-colors button { width: 36px; height: 36px; border: 3px solid #e8edf0; border-radius: 50%; box-shadow: 0 0 0 1px #6e8088; cursor: pointer; }.immersive-colors button.is-active { outline: 2px solid #172127; outline-offset: 3px; }.immersive-colors__navy { background: #202d4b; }.immersive-colors__black { background: #151918; }.immersive-colors__white { background: #dce0dc; }
+.immersive-note { position: relative; z-index: 2; padding: 20px max(24px, calc((100vw - 1400px) / 2)); background: #dce5e8; color: #35464e; font-size: 12px; line-height: 1.7; }
+.immersive-story--ceramic .immersive-note { color: #dce9df; background: #11271f; }
+@media (max-width: 960px) { .immersive-step__content { width: min(360px, 44vw); }.immersive-step h2 { font-size: clamp(38px, 5vw, 56px); } }
+@media (max-width: 767px) {
+  .immersive-stage__label { top: 88px; }.immersive-stage__hint { bottom: 18px; }
+  .immersive-step { align-items: flex-end; justify-content: flex-start; padding: 92px 16px 70px; }
+  .immersive-step__content { width: min(100%, 440px); padding: 20px 22px 24px; background: rgba(232, 237, 240, .88); backdrop-filter: blur(12px); }
+  .immersive-story--ceramic .immersive-step__content { background: rgba(19, 44, 33, .88); }
+  .immersive-step__number { margin-bottom: 10px; }.immersive-step h2 { max-width: 14ch; font-size: clamp(30px, 8vw, 42px); }.immersive-step p { margin-top: 14px; font-size: 14px; line-height: 1.65; }.immersive-colors { margin-top: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { .immersive-stage canvas { touch-action: auto; } .immersive-step__content { backdrop-filter: none; } }

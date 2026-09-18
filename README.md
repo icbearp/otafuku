@@ -22,6 +22,10 @@ npm run preview
 - 公司名称、使命、口号和价值观：`src/data/company.ts`
 - 颜色、布局和响应式样式：`src/styles.css`
 - 品牌与产品图片：`public/assets/`
+- 3D 叙事组件：`src/components/ThreeStories.tsx`
+- 概念模型：`public/models/`，可运行 `npm run models:build` 重新生成
+
+服装和陶瓷 3D 模型依据参考图片程序化制作，并非实物扫描。若之后获得实际商品的多角度照片、尺寸与材质资料，可在 Blender 中精修或直接替换同名 GLB；陶瓷模型要保留 `mesh_clay`、`mesh_painted`、`mesh_glazed` 三个阶段组名。Windows 上可用 Blender 后台模式执行 `scripts/validate-models.py` 检查模型结构。
 
 子站上线时，只需把对应板块的 `destination` 从 `null` 改成完整的 HTTPS 地址。按钮会自动从“独立网站筹备中”变成“进入独立网站”。
 
